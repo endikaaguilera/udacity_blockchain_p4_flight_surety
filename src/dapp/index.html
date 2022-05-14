@@ -20,11 +20,134 @@
     </nav>
 
     <main class="container">
+        <h2>1. Create & Register</h2>
+        <h5>Enter an airline name, then select an address to assign to it. After the first 5, make sure and vote to include</h5>
+        <div id="register-wrapper" class="top-20">
+        </div>
+        <div class="row top-20">
+            <label class="form">Airline Name</label> <input type="text" id="airline-name">
+            <select id="airline-address" name="airline-address">
+                <option>Please Select a ADDRESS from below</option>
+            </select>
+            <btn class="btn btn-primary" id="submit-airline">Create Airline</btn>
+            &nbsp;&nbsp; &nbsp;&nbsp;
+        </div>
+        <div class="row top-20">
+            <btn class="btn btn-primary fullWidth" id="update-airlines-registered">Update registered Airlines</btn>
+        </div>
+        <div class="row top-20">
+            Not Registered Airlines:&nbsp;<select id="vote-address" name="vote-address"></select>
+        </div>   
+        <div class="row top-20">
+            Registered Airlines:&nbsp;<select id="registered-address" name="registered-address"></select> &nbsp;&nbsp; &nbsp;&nbsp;
+            <btn class="btn btn-primary" id="fund-airline">Fund Airline</btn>
+        </div>                
+        <div class="row top-20">
+            <h7>Select a non-registered airline, then select a registered airline, then vote(make sure and do at least 1/2 of exiting airlines if you have more than 5</h7>
+            <btn class="btn btn-primary" id="vote-airline">Vote On Airline</btn>
+        </div>
+    </main>
 
+    <main class="container">
+        <h2>2. Buy Flight Insurance</h2>
+        <h5>First select the flight and register it before you buy insurance.</h5>
+        <div id="insurance-wrapper" class="top-20">
+        </div>
+        <select id="flights" name="flights">
+            <option>Please Select a Flight from below</option>
+        </select>
+        <btn class="btn btn-primary" id="submit-flight">Register Flight</btn> &nbsp;&nbsp;
+        <br/><br/><br/>
+        <div class="row top-20">
+            Select Passenger
+        </div>
+        <select id="passengers" name="passengers">
+            <option>Please Select a Passenger from below</option>
+        </select>
+
+        <div class="row top-20">
+            <label class="form">Airline</label>
+            <input type="text" id="insurance-airline">
+            <label class="form">Date</label>
+            <input type="text" id="insurance-date">
+            <label class="form">Origin</label>
+            <input type="text" id="insurance-departure">
+            <label class="form">Dest:</label>
+            <input type="text" id="insurance-destination">
+        </div>
+
+        <br/>
+        <div class="row top-20">
+            <label class="form">Flight</label>
+            <input type="text" id="insurance-flightnumber">
+            <label class="form">Ether</label>
+            <input type="text" id="insurance-ether">
+            <btn class="btn btn-primary" id="submit-insurance">Purchase Insurance</btn>
+        </div>
+    </main>
+
+    <main class="container">
+        <h2>3. Check Flight Status</h2>
+        <h5>Make sure and select a flight that is registered</h5>
         <div id="display-wrapper" class="top-20">
         </div>
         <div class="row top-20">
-            <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+            <label class="form">Flight(Keep checking until you get a flight Delayed)</label>
+            <select id="flights-oracle" name="flights-oracle"></select>
+            <btn class="btn btn-primary" id="submit-oracle">Flight Status</btn>
+            &nbsp;&nbsp; &nbsp;&nbsp;
+        </div>
+
+    </main>
+
+    <main class="container">
+        <h2>4. Claim Insurance</h2>
+        <div id="claim-wrapper" class="top-20">
+        </div>
+        <select id="flights-claim" name="flights-claim">
+            <option>Please Select a Flight from below</option>
+        </select>
+        <div class="row top-20">
+            <label class="form">Airline</label>
+            <input type="text" id="claim-airline">
+            <label class="form">Date</label>
+            <input type="text" id="claim-date">
+            <label class="form">Origin</label>
+            <input type="text" id="claim-departure">
+            <label class="form">Dest:</label>
+            <input type="text" id="claim-destination">
+        </div>
+
+        <br/>
+        <div class="row top-20">
+            <label class="form">Flight</label>
+            <input type="text" id="claim-flightnumber">
+            <btn class="btn btn-primary" id="submit-claim">Claim Flight Insurance</btn>
+        </div>
+
+        <br/>
+        <h4>B. Check for Credit</h4>
+        <div class="row top-20">
+            Select Passenger
+        </div>
+        <select id="claim-passengers" name="claim-passengers">
+            <option>Please Select a Passenger from below</option>
+        </select>
+        <div id="credits-wrapper" class="top-20">
+            Credits:
+        </div>
+        <div class="row top-20">
+            <btn class="btn btn-primary" id="submit-credits">Check for Credits</btn>
+            <br/>
+        </div>
+
+        <br/>
+        <br/>
+        <h4>C. Withdraw</h4>
+        <div id="withdraw-wrapper" class="top-20">
+        </div>
+        <div class="row top-20">
+            <btn class="btn btn-primary" id="submit-withdraw">Withdraw Credits</btn>
         </div>
     </main>
 
