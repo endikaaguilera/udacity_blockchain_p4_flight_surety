@@ -61,6 +61,7 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             // Write transaction
             contract.registerNewAirline(airlineName, airlineAddress, (error, result) => {
                 display('register-wrapper', 'New Airline', 'Created Airline', [{ label: 'RESULT:', error: error, value: result }]);
+                updateAirlinesCount();
             });
         })
 
@@ -258,8 +259,26 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
 
     });
 
-})();
+    function updateAirlinesCount () {
+        let airlinesCountLabel = DOM.elid('airlines-count');
+        contract.getAirlinesCount((error, result) => {
+          
+            if (error) {
 
+                console.log("error");
+
+            } else {
+
+                airlinesCountLabel.textContent = "Airlines Count: " + result;
+                console.log("Airlines Count: " + result);
+
+            }
+        
+        });
+
+    }
+
+})();
 
 //Standard functions
 function display(divName, title, description, results) {
