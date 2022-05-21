@@ -1,14 +1,16 @@
 body {
-    background-image: url('flight.jpg');
     /* Source: iStockPhoto */
+    background-image: url('flight.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
 }
 
 .container {
-    margin-top: 400px;
-    background-color: #000;
-    opacity: 0.9;
+    margin-top: 200px;
+    margin-bottom: 200px;
+    background-color: #343a40 !important;
+    opacity: 0.95;
     color: #fff;
     padding: 40px;
 }
@@ -43,6 +45,27 @@ input {
     margin-right: 30px;
 }
 
-.fullWidth {
+.full-width {
     width: 100%;
+}
+
+select {
+    height: 40px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+hr {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+    color: white;
+    height: 5px;
+    background-color: white;
 }
