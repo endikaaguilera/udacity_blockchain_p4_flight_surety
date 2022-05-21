@@ -231,13 +231,13 @@ export default class Contract {
         self.flightSuretyApp.methods
             .checkFlightStatus(payload.airline, payload.flight, payload.timestamp)
             .call({ from: self.owner, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-               
+
                 self.statusCodeArray.forEach((status, index) => {
 
                     console.log("statusCodeArray status : " + JSON.stringify(status) + " index: " + index);
 
                 });
-                
+
                 console.log("checkFlightStatus result : " + result);
 
                 const statusInfo = self.statusCodeArray.find(code => code.index === result);
@@ -260,15 +260,32 @@ export default class Contract {
                 payload.flight,
                 payload.timestamp)
             .call({ from: self.owner, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-                //console.log(error, result);
+
+                if (error) {
+                    
+                    console.error("claimInsurance ERROR: ", error);
+
+                } else {
+
+                    console.log("claimInsurance SUCCESS: ", result);
+
+                }
+
                 const statusInfo = self.statusCodeArray.find(code => code.index === result);
                 let flightStatus
+               
                 if (result >= 20) {
+               
                     flightStatus = "YES --- " + statusInfo.desc;
+               
                 } else {
+               
                     flightStatus = "NO --- " + statusInfo.desc;
+                
                 }
+
                 callback(error, flightStatus);
+
             });
     }
 
@@ -279,9 +296,9 @@ export default class Contract {
             addr: address, //self.airlines[0],
             flight: flight,
             passenger: passenger,
-            timestamp: this.timestamp //Math.floor(Date.now() / 1000)
+            timestamp: "" + this.timestamp //Math.floor(Date.now() / 1000)
         }
-        //console.log("checkForCredits - Check passenger:", payload)
+        console.log("checkForCredits - Check passenger:", payload)
 
         self.flightSuretyApp.methods
             .getInsuranceCredits(payload.addr,
@@ -333,6 +350,22 @@ export default class Contract {
         let self = this;
 
         await self.flightSuretyApp.methods.getAirlineIsRegistered(address)
+            .call({ from: self.firstAirline, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    callback(error, result);
+                }
+
+            });
+
+    }
+
+    async getAirlinesCount(callback) {
+        let self = this;
+        console.log("call getAirlinesCount");
+
+        await self.flightSuretyApp.methods.getAirlineCount()
             .call({ from: self.firstAirline, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
                 if (error) {
                     console.log(error);
