@@ -6,7 +6,8 @@ pragma solidity ^0.8.0;
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
 // More info: https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2018/november/smart-contract-insecurity-bad-arithmetic/
 
-import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../node_modules/openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
+import "../node_modules/openzeppelin-solidity/contracts/utils/Strings.sol";
 import "./FlightSuretyData.sol";
 
 /************************************************** */
@@ -225,7 +226,7 @@ contract FlightSuretyApp {
         address addr,
         string memory flight,
         uint256 timestamp
-    ) external requireIsOperational requireExistingAirline {
+    ) external requireIsOperational {
         //Default status and flight
         Flight memory newFlightToRegister = Flight(
             true,
@@ -235,7 +236,7 @@ contract FlightSuretyApp {
         );
 
         //get key for mapping
-        bytes32 airLineKey = getFlightKey(addr, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(addr, flight, Strings.toString(timestamp));
         flights[airLineKey] = newFlightToRegister;
     }
 
@@ -248,7 +249,7 @@ contract FlightSuretyApp {
         string memory flight,
         uint256 timestamp
     ) external view returns (uint8) {
-        bytes32 airLineKey = getFlightKey(addr, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(addr, flight, Strings.toString(timestamp));
         require(
             flights[airLineKey].isRegistered,
             "Only Registered Flights can be checked"
@@ -278,7 +279,7 @@ contract FlightSuretyApp {
         );
 
         //build key from paramaters
-        bytes32 airLineKey = getFlightKey(addr, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(addr, flight, Strings.toString(timestamp));
         Flight memory flightToInsure = flights[airLineKey];
 
         //Next to require tests
@@ -305,7 +306,7 @@ contract FlightSuretyApp {
         uint256 timestamp
     ) external view returns (uint8) {
         //build key from paramaters
-        bytes32 airLineKey = getFlightKey(addr, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(addr, flight, Strings.toString(timestamp));
         Flight memory flightToCheck = flights[airLineKey];
 
         //Next to require tests
@@ -314,7 +315,7 @@ contract FlightSuretyApp {
             "Flight must be registered to check on status for it."
         );
         require(
-            flightToCheck.statusCode > STATUS_CODE_ON_TIME,
+            flightToCheck.statusCode != STATUS_CODE_ON_TIME,
             "Flight is still on time!"
         );
 
@@ -328,7 +329,7 @@ contract FlightSuretyApp {
     function getInsuranceCredits(
         address addr,
         string memory flight,
-        uint256 timestamp,
+        string memory timestamp,
         address passenger
     ) external view returns (uint256) {
         //build key from paramaters
@@ -365,7 +366,7 @@ contract FlightSuretyApp {
         address passenger
     ) external requireIsOperational returns (bool) {
         //build key from paramaters
-        bytes32 airLineKey = getFlightKey(addr, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(addr, flight, Strings.toString(timestamp));
         Flight memory flightToCheck = flights[airLineKey];
 
         //Next to require tests
@@ -416,7 +417,7 @@ contract FlightSuretyApp {
         uint256 timestamp,
         uint8 statusCode
     ) internal {
-        bytes32 airLineKey = getFlightKey(airline, flight, timestamp);
+        bytes32 airLineKey = getFlightKey(airline, flight, Strings.toString(timestamp));
         flights[airLineKey].statusCode = statusCode;
     }
 
@@ -439,8 +440,6 @@ contract FlightSuretyApp {
 
         emit OracleRequest(index, airline, flight, timestamp);
     }
-
-    // region ORACLE MANAGEMENT
 
     // Incremented to add pseudo-randomness at various points
     uint8 private nonce = 0;
@@ -560,7 +559,7 @@ contract FlightSuretyApp {
     function getFlightKey(
         address airline,
         string memory flight,
-        uint256 timestamp
+        string memory timestamp
     ) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
@@ -605,6 +604,4 @@ contract FlightSuretyApp {
 
         return random;
     }
-
-    // endregion
 }

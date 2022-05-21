@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../node_modules/openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
 
 contract FlightSuretyData {
     using SafeMath for uint256;
@@ -388,4 +388,5 @@ contract FlightSuretyData {
     ) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
+
 }
