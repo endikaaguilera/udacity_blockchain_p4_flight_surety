@@ -1,8 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
-var config = {
+module.exports = {
   entry: ['babel-polyfill', path.join(__dirname, "src/dapp")],
   output: {
     path: path.join(__dirname, "prod/dapp"),
@@ -10,7 +9,7 @@ var config = {
   },
   module: {
     rules: [
-      {
+    {
         test: /\.(js|jsx)$/,
         use: "babel-loader",
         exclude: /node_modules/
@@ -36,29 +35,14 @@ var config = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src/dapp/index.html")
     }),
-    new NodePolyfillPlugin(),
   ],
   resolve: {
-    extensions: [".js"],
-    alias: {
-      process: "process/browser"
-    },
+    extensions: [".js"]
+
   },
-  /*devServer: {
+  devServer: {
     contentBase: path.join(__dirname, "dapp"),
-    port: 8000,
+    port: 8080,
     stats: "minimal"
-  }*/
-};
-
-module.exports = (env, argv) => {
-  if (argv.mode === 'development') {
-    config.devtool = 'source-map';
   }
-
-  if (argv.mode === 'production') {
-    config.devtool = false;
-  }
-
-  return config;
 };

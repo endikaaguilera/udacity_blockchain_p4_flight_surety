@@ -26,7 +26,9 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
-            process: 'process/browser',
+            "process.env": {
+                "BUILD_TARGET": JSON.stringify('server')
+            }
         }),
     ],
     output: {
