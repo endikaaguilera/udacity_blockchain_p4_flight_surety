@@ -7,7 +7,7 @@ import './flightsurety.css';
 const flightsArray = [];
 
 //Set array for destinations
-const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL", "ORD", "HNL", "RNO", "SEA", "JFK"];
+const destinationsArray = ["Fuerteventura (FUE)", "Tenerife (TCI)", "Barcelona (BCN)", "Madrid (MAD)", "Vitoria (VIT)", "Palma de Mallorca (PMI)", "Menorca (MAH)", "Sevilla (SVQ)", "Málaga (AGP)", "A Coruña (LCG)", "Ibiza (IBZ)", "San Sebastian (EAS)", "Bilbao (BIO)"];
 
 (async () => {
 
@@ -38,7 +38,15 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             // Write transaction
 
             contract.fetchFlightStatus(flightNumber, flight.address, (error, result) => {
-                display('display-wrapper', 'Oracles', 'Trigger oracles', [{ label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.status }]);
+                if (error) {
+
+                    display('display-wrapper', 'Oracles', 'Trigger oracles', [{ label: 'Fetch Flight Status', error: error }]);
+
+                } else {
+
+                    display('display-wrapper', 'Oracles', 'Trigger oracles', [{ label: 'Fetch Flight Status', value: result.flight + ' ' + result.status }]);
+
+                }
             });
         })
 
@@ -61,6 +69,7 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             // Write transaction
             contract.registerNewAirline(airlineName, airlineAddress, (error, result) => {
                 display('register-wrapper', 'New Airline', 'Created Airline', [{ label: 'RESULT:', error: error, value: result }]);
+                updateAirlines();
                 updateAirlinesCount();
             });
         })
@@ -124,6 +133,7 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             DOM.elid('insurance-departure').value = flight.departure;
             DOM.elid('insurance-destination').value = flight.destination;
             DOM.elid('insurance-flightnumber').value = flightNumber;
+            updatePassengers();
         })
 
         // User-submitted transaction
@@ -134,25 +144,6 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             contract.registerFlight(flightNumber, flight.address, (error, result) => {
                 //console.log("registerFlight", result)
                 display('insurance-wrapper', 'Flight Register', 'Registered', [{ label: 'RESULT:', error: error, value: result.flight }]);
-            });
-        })
-
-
-
-        // Passenger Select
-        DOM.elid('passengers').addEventListener('click', () => {
-            const select = DOM.elid('passengers');
-            const selectClaim = DOM.elid('claim-passengers');
-            contract.passengers.forEach((item, index) => {
-                //console.log(`${index} : ${item}`);
-                const option = DOM.option();
-                option.text = item, option.value = item;
-                select.add(option);
-
-                //add for passengers as well
-                const optionAgain = DOM.option();
-                optionAgain.text = item, optionAgain.value = item;
-                selectClaim.add(optionAgain);
             });
         })
 
@@ -216,53 +207,86 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
             });
         })
 
-        DOM.elid('update-airlines-registered').addEventListener('click', () => {
-            let voteAddressSelect = DOM.elid('vote-address');
-            let registeredAddressSelect = DOM.elid('registered-address');
+    });
 
-            var i1, L1 = voteAddressSelect.options.length - 1;
-            for(i1 = L1; i1 >= 0; i1--) {
-                voteAddressSelect.remove(i1);
-            }
+    function updateAirlines() {
 
-            var i2, L2 = registeredAddressSelect.options.length - 1;
-            for(i2 = L2; i2 >= 0; i2--) {
-                registeredAddressSelect.remove(i2);
-            }
+        let voteAddressSelect = DOM.elid('vote-address');
+        let registeredAddressSelect = DOM.elid('registered-address');
 
-            contract.airlines.forEach((addr, index) => {
-                const option = DOM.option();
-                option.text = addr, option.value = addr;
-                
-                console.log("update-airlines-registered addr: " + addr);
+        var i1, L1 = voteAddressSelect.options.length - 1;
+        for (i1 = L1; i1 >= 0; i1--) {
+            voteAddressSelect.remove(i1);
+        }
 
-                contract.getAirlineIsRegistered(addr, (error, result) => {
+        var i2, L2 = registeredAddressSelect.options.length - 1;
+        for (i2 = L2; i2 >= 0; i2--) {
+            registeredAddressSelect.remove(i2);
+        }
 
-                    console.log("update-airlines-registered");
-                    console.log(result);
+        contract.airlines.forEach((addr, index) => {
+            const option = DOM.option();
+            option.text = addr, option.value = addr;
 
-                    if (result != null && !result) {
+            console.log("updateAirlines addr: " + addr);
 
-                        voteAddressSelect.add(option);
+            contract.getAirlineIsRegistered(addr, (error, result) => {
 
-                    } else if (result) {
+                console.log(result);
 
-                        registeredAddressSelect.add(option);
+                if (result != null && !result) {
 
-                    }
+                    voteAddressSelect.add(option);
 
-                });
+                } else if (result) {
 
-            })
+                    registeredAddressSelect.add(option);
+
+                }
+
+            });
 
         })
 
-    });
+    }
 
-    function updateAirlinesCount () {
+    function updatePassengers() {
+
+        const select = DOM.elid('passengers');
+        const selectClaim = DOM.elid('claim-passengers');
+
+        var i1, L1 = select.options.length - 1;
+        for (i1 = L1; i1 >= 0; i1--) {
+            select.remove(i1);
+        }
+
+        var i2, L2 = selectClaim.options.length - 1;
+        for (i2 = L2; i2 >= 0; i2--) {
+            selectClaim.remove(i2);
+        }
+
+        contract.passengers.forEach((item, index) => {
+
+            if (item) {
+
+                const option = DOM.option();
+                option.text = item, option.value = item;
+                select.add(option);
+
+                const optionAgain = DOM.option();
+                optionAgain.text = item, optionAgain.value = item;
+                selectClaim.add(optionAgain);
+
+            }
+
+        });
+
+    }
+
+    function updateAirlinesCount() {
         let airlinesCountLabel = DOM.elid('airlines-count');
         contract.getAirlinesCount((error, result) => {
-          
+
             if (error) {
 
                 console.log("error");
@@ -273,7 +297,7 @@ const destinationsArray = ["DFW", "LAX", "DAL", "LAS", "BWI", "MEM", "DTW", "ATL
                 console.log("Airlines Count: " + result);
 
             }
-        
+
         });
 
     }
