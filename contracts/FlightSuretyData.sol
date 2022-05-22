@@ -279,7 +279,7 @@ contract FlightSuretyData {
         requireIsOperational
     {
         bool isAlreadyInsuree = false;
-        uint256 newInsuredValue = msg.value;
+        uint256 newInsuredValue = 1;
 
         Insured[] memory insurees = flightInsurees[flight];
         for (uint256 i = 0; i < insurees.length; i++) {
@@ -388,5 +388,4 @@ contract FlightSuretyData {
     ) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
-
 }

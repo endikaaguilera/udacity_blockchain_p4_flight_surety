@@ -26,7 +26,7 @@ contract FlightSuretyApp {
     // Flight status codes
     uint8 private constant STATUS_CODE_UNKNOWN = 0;
     uint8 private constant STATUS_CODE_ON_TIME = 10;
-    uint8 private constant STATUS_CODE_LATE_AIRLINE = 20; //payment proceess gets triggered here
+    uint8 private constant STATUS_CODE_LATE_AIRLINE = 20;
     uint8 private constant STATUS_CODE_LATE_WEATHER = 30;
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
@@ -271,11 +271,11 @@ contract FlightSuretyApp {
         //verify min & maximum
         require(
             msg.value > 0 ether,
-            "Need to pay more than 0 Ether for be be passenger"
+            "Need to pay more than 0 Ether"
         );
         require(
             msg.value <= 1 ether,
-            "Need to pay max 1 Ether for be be passenger"
+            "Need to pay max 1 Ether"
         );
 
         //build key from paramaters
@@ -315,7 +315,7 @@ contract FlightSuretyApp {
             "Flight must be registered to check on status for it."
         );
         require(
-            flightToCheck.statusCode != STATUS_CODE_ON_TIME,
+            flightToCheck.statusCode > STATUS_CODE_ON_TIME,
             "Flight is still on time!"
         );
 
@@ -604,4 +604,5 @@ contract FlightSuretyApp {
 
         return random;
     }
+    
 }
