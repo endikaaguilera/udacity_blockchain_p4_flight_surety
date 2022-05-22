@@ -38,10 +38,7 @@
         </div>
         <div class="row top-20">
             <btn class="btn btn-primary full-width" id="submit-airline">Create Airline</btn>
-        </div>
-        <div class="row top-20">
-            <btn class="btn btn-primary full-width" id="update-airlines-registered">Update registered Airlines</btn>
-        </div>
+        </div>       
         <div class="row top-20">
             Non Registered Airlines:<select id="vote-address" name="vote-address" class="full-width"></select>
         </div>
@@ -50,12 +47,9 @@
         </div>
         <div class="row top-20">
             <btn class="btn btn-primary full-width" id="fund-airline">Fund Airline</btn>
-        </div>
+        </div>         
         <div class="row top-20">
-            <h7>Select a non-registered airline, then select a registered airline, then vote(make sure and do at least
-                1/2 of exiting airlines if you have more than 5</h7>
-        </div>
-        <div class="row top-20">
+            <h7>Select a non-registered airline, a registered airline and vote</h7>
             <btn class="btn btn-primary full-width" id="vote-airline">Vote On Airline</btn>
         </div>
 
@@ -67,7 +61,9 @@
 
         <h2>2. Buy Flight Insurance</h2>
         <h5>First select the flight and register it before you buy insurance.</h5>
-        <div id="insurance-wrapper" class="row top-20">
+        <div id="insurance-wrapper" class="top-20">
+        </div>
+        <div class="row top-20">
             Select Flight:
             <select id="flights" name="flights" class="full-width">
                 <option>Please Select a Flight</option>
@@ -75,7 +71,7 @@
         </div>
         <div class="row top-20">
             <btn class="btn btn-primary full-width" id="submit-flight">Register Flight</btn>
-        </div>
+        </div>        
         <div class="row top-20">
             Select Passenger:
             <select id="passengers" name="passengers" class="full-width">
@@ -119,7 +115,7 @@
         <div id="display-wrapper" class="top-20">
         </div>
         <div class="row top-20">
-            Flight: (results availlable only if there is a delayed flight, just be patient)
+            Flight:
             <select id="flights-oracle" name="flights-oracle" class="full-width">
                 <option>Please Select a delayed Flight</option>
             </select>
