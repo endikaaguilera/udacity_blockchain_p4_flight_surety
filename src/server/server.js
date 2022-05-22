@@ -2,92 +2,61 @@ import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
 import Config from './config.json';
 import Web3 from 'web3';
 import express from 'express';
-
+import 'regenerator-runtime/runtime'
 
 let config = Config['localhost'];
 let web3 = new Web3(new Web3.providers.WebsocketProvider(config.url.replace('http', 'ws')));
 web3.eth.defaultAccount = web3.eth.accounts[0];
 let flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
-let testOraclesCount = 9;
-let oracles = [];
-const statusCodeArray = [["STATUS_CODE_UNKNOWN", 0], ["STATUS_CODE_ON_TIME", 10], ["STATUS_CODE_LATE_AIRLINE", 20], ["STATUS_CODE_LATE_WEATHER", 30], ["STATUS_CODE_LATE_TECHNICAL", 40], ["STATUS_CODE_LATE_OTHER", 50]];
-let oracleError;
+let oracles;
+let accounts;
+
+registerOracles();
+
+async function registerOracles() {
+  accounts = await web3.eth.getAccounts();
+  oracles = accounts
+
+  console.log(oracles)
+  let fundingAmount = web3.utils.toWei("1", "ether");
+  for (let i = 5; i < oracles.length; i++) {
+    await flightSuretyApp.methods.registerOracle().send({ from: oracles[i], value: fundingAmount, gas: 1000000 });
+  }
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+async function submitOracleResponse(index, airline, flight, timestamp) {
+
+  for (let i = 5; i < oracles.length; i++) {
+
+    let statusResponse = getRandomInt(0, 6) * 10;
+
+    await flightSuretyApp.methods.submitOracleResponse(getRandomInt(0, 10), airline, flight, timestamp, statusResponse).send({
+      from: oracles[i]
+    })
+
+    console.log(oracles.length, 'oracle responses sent')
+  }
+}
 
 flightSuretyApp.events.OracleRequest({
   fromBlock: 0
 }, function (error, event) {
-  if (error) console.error("OracleRequest ERROR: ", error);
-  checkRandomStatus("OracleRequest: ", event.returnValues)
-});
+  if (error) console.log(error)
+  console.log('EVENT received')
 
-flightSuretyApp.events.OracleReport({
-  fromBlock: 0
-}, function (error, event) {
-  if (error) console.error("OracleReport ERROR: ", error);
-  console.log("OracleReport: ", event);
-});
+  let index = event.returnValues[0];
+  let airline = event.returnValues[1];
+  let flight = event.returnValues[2]
+  let timestamp = event.returnValues[3];
+  console.log('submitOracleResponse')
+  submitOracleResponse(index, airline, flight, timestamp)
 
-//Run process to check
-async function checkRandomStatus(result) {
-  const trustedOracles = [];
-
-  oracles.forEach(function (oracle) {
-    if (oracle.indices[0] === result.index) trustedOracles.push(oracle);
-    if (oracle.indices[1] === result.index) trustedOracles.push(oracle);
-    if (oracle.indices[2] === result.index) trustedOracles.push(oracle);
-  });
-
-  trustedOracles.forEach(function (oracle) {
-    submitOracleResponse(result, oracle);
-  });
-}
-
-//submit back to app contract with random status
-async function submitOracleResponse(result, oracle) {
-  const randomStatusCodeIndex = Math.floor(Math.random() * statusCodeArray.length);
-  const randomStatusCode = statusCodeArray[randomStatusCodeIndex];
-
-  try {
-    let regResult, indexResult;
-    // Submit a response...it will only be accepted if there is an Index match
-    await flightSuretyApp.methods.submitOracleResponse(result.index,
-      result.airline,
-      result.flight,
-      result.timestamp,
-      randomStatusCode[1])
-      .send({ from: oracle.account, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-        oracleError = error;
-        regResult = result;
-      });
-  }
-  catch (e) {
-    console.error('\nError', result.index, result.flight, result.timestamp);
-  }
-}
-
-//build all default oracles and persist
-web3.eth.getAccounts(async (error, accts) => {
-
-  // ARRANGE
-  let fee = await flightSuretyApp.methods.REGISTRATION_FEE()
-    .call({ from: accts[1], "gas": 4712388, "gasPrice": 100000000000 });
-
-  for (let a = 1; a < testOraclesCount; a++) {
-    let regResult, indexResult;
-    await flightSuretyApp.methods.registerOracle()
-      .send({ from: accts[a], value: fee, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-        oracleError = error;
-        regResult = result;
-      });
-
-    await flightSuretyApp.methods.getMyIndexes()
-      .call({ from: accts[a], "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-        oracleError = error;
-        indexResult = result;
-      });
-
-    oracles.push({ account: accts[a], indices: [indexResult[0], indexResult[1], indexResult[2]] });
-  }
 });
 
 const app = express();
@@ -96,7 +65,5 @@ app.get('/api', (req, res) => {
     message: 'An API for use with your Dapp!'
   })
 })
-
-//maybe flights and timestamps hard code to hydrate a dropdown with info
 
 export default app;
