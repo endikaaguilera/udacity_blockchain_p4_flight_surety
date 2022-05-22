@@ -230,7 +230,7 @@ contract FlightSuretyApp {
         //Default status and flight
         Flight memory newFlightToRegister = Flight(
             true,
-            STATUS_CODE_UNKNOWN,
+            STATUS_CODE_ON_TIME,
             timestamp,
             addr
         );
