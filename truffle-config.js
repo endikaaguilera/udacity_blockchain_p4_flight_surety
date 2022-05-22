@@ -28,9 +28,6 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 const HDWalletProvider = require('truffle-hdwallet-provider');
-const infuraKey = "5367f4eaeedb4665b5245752c34f326b";
-
-const mnemonic = "wife time february system cost upon ghost craft device cliff hazard boss";
 
 module.exports = {
   /**
@@ -50,24 +47,11 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-    development: {
+    develop: {
       host: "127.0.0.1",    // Localhost (default: none)
       port: 9545,           // Standard Ethereum port (default: none)
       network_id: "*",      // Any network (default: none)
       websockets: true
-    },
-
-    // Useful for deploying to a public network.
-    // NB: It's important to wrap the provider as a function.
-    rinkeby: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
-      //provider: () => new HDWalletProvider(mnemonic, `wss://rinkeby.infura.io/v3/${infuraKey}`), // Uncomment for testing usign $ truffle develop (using on develop terminal fails)
-      network_id: 4,       // rinkeby's id
-      gas: 4500000,        // rinkeby has a lower block limit than mainnet
-      gasPrice: 10000000000
-      // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-      // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
 
     // Another network with more advanced options...
@@ -107,7 +91,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.8.4",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.8.4",       // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
