@@ -243,6 +243,7 @@ export default class Contract {
                 const statusInfo = self.statusCodeArray.find(code => code.index === result);
                 const flightStatus = { flight: payload.flight, status: statusInfo.desc }
                 callback(error, flightStatus);
+
             });
     }
 
@@ -262,29 +263,17 @@ export default class Contract {
             .call({ from: self.owner, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
 
                 if (error) {
-                    
+
                     console.error("claimInsurance ERROR: ", error);
+                    callback(error, result);
 
                 } else {
 
                     console.log("claimInsurance SUCCESS: ", result);
+                    const statusInfo = self.statusCodeArray.find(code => code.index === result);
+                    callback(error, statusInfo.desc);
 
                 }
-
-                const statusInfo = self.statusCodeArray.find(code => code.index === result);
-                let flightStatus
-               
-                if (result >= 20) {
-               
-                    flightStatus = "YES --- " + statusInfo.desc;
-               
-                } else {
-               
-                    flightStatus = "NO --- " + statusInfo.desc;
-                
-                }
-
-                callback(error, flightStatus);
 
             });
     }
@@ -306,15 +295,21 @@ export default class Contract {
                 payload.timestamp,
                 payload.passenger)
             .call({ from: self.owner, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-                //console.log(error, result);
-                let weiToEther = this.web3.utils.fromWei(result, "ether");
-                let flightStatus
-                if (result >= 20) {
-                    flightStatus = "YES, you have this amount:" + weiToEther;
+
+                if (error) {
+
+                    console.log("getInsuranceCredits ERROR: ", error);
+                    callback(error, result);
+
                 } else {
-                    flightStatus = "NO --- " + result;
+
+                    console.log("getInsuranceCredits SUCCCESS: ", result);
+                    let weiToEther = this.web3.utils.fromWei(result, "ether");
+                    console.log("getInsuranceCredits weiToEther: ", weiToEther);
+                    callback(error, weiToEther);
+
                 }
-                callback(error, flightStatus);
+
             });
     }
 
@@ -334,14 +329,19 @@ export default class Contract {
                 payload.timestamp,
                 payload.passenger)
             .send({ from: payload.passenger, "gas": 4712388, "gasPrice": 100000000000 }, (error, result) => {
-                //console.log(error, result);
-                let flightStatus
-                if (result >= 20) {
-                    flightStatus = "YES, you have this amount:" + result;
+
+                if (error) {
+
+                    console.log("withdrawInsuranceCredits ERROR: ", error);
+                    callback(error, result);
+
                 } else {
-                    flightStatus = "NO --- " + result;
+
+                    console.log("withdrawInsuranceCredits SUCCCESS: ", result);
+                    callback(error, result);
+
                 }
-                callback(error, flightStatus);
+
             });
     }
 
